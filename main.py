@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 # Function to generate random time-series data
 def generate_random_data():
     np.random.seed(42)
-    timestamps = pd.date_range(start="2023-01-01", end="2023-01-10", freq='H')
+    timestamps = pd.date_range(start="2023-01-01", end="2023-01-20", freq='H')  # Extend time range
     values = np.random.normal(loc=0, scale=1, size=len(timestamps))
     data = pd.DataFrame({'timestamp': timestamps, 'value': values})
     return data
@@ -44,6 +44,13 @@ def main():
     plt.figure(figsize=(10, 6))
     plt.plot(data['timestamp'], data['value'], label='Data')
     plt.scatter(data['timestamp'][predictions == -1], data['value'][predictions == -1], color='red', label='Unhealthy')
+
+    # Predict health for a future timestamp
+    future_timestamp = pd.Timestamp("2023-01-15 12:00:00")
+    future_value = data.loc[data['timestamp'] == future_timestamp, 'value'].values[0]
+    future_prediction = 'Unhealthy' if train_and_predict(pd.DataFrame({'value': [future_value]}), threshold)[0] == -1 else 'Healthy'
+    plt.scatter(future_timestamp, future_value, color='green', label=f'Future ({future_prediction})')
+
     plt.xlabel('Timestamp')
     plt.ylabel('Value')
     plt.legend()
