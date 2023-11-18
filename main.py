@@ -51,7 +51,8 @@ def main():
     # Predict health for a future timestamp
     future_timestamp = pd.Timestamp("2023-01-15 12:00:00")
     future_value = data.loc[data['timestamp'] == future_timestamp, 'value'].values[0]
-    future_prediction = 'Unhealthy' if train_and_predict(pd.DataFrame({'value': [future_value]}), threshold)[0] == -1 else 'Healthy'
+    future_predictions = train_and_predict(pd.DataFrame({'value': [future_value]}), threshold)
+    future_prediction = 'Unhealthy' if future_predictions[0] == -1 else 'Healthy'
 
     # Plot predicted health for future timestamp
     st.subheader(f"Predicted Health for Future Timestamp ({future_prediction})")
