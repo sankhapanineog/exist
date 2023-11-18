@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+import plotly.express as px
 
 # Activation functions
 def sigmoid(x):
@@ -126,12 +126,8 @@ def main():
 
     # Plot original data
     st.subheader("Original Data Plot")
-    plt.figure(figsize=(10, 6))
-    plt.plot(data['timestamp'], data['value'], label='Data')
-    plt.xlabel('Timestamp')
-    plt.ylabel('Value')
-    plt.legend()
-    st.pyplot(plt)
+    fig_original = px.line(data, x='timestamp', y='value', labels={'value': 'Original Data'})
+    st.plotly_chart(fig_original)
 
     # Make predictions for a future timestamp
     future_timestamp = pd.Timestamp("2023-01-15 12:00:00")
@@ -143,13 +139,9 @@ def main():
 
     # Plot predicted health for future timestamp
     st.subheader(f"Predicted Health for Future Timestamp ({future_timestamp}): {health_prediction}")
-    plt.figure(figsize=(6, 4))
-    plt.plot(data['timestamp'], data['value'], label='Data')
-    plt.scatter(future_timestamp, future_value, color='green', label=f'Future ({health_prediction})')
-    plt.xlabel('Timestamp')
-    plt.ylabel('Value')
-    plt.legend()
-    st.pyplot(plt)
+    fig_future = px.line(data, x='timestamp', y='value', labels={'value': 'Original Data'})
+    fig_future.add_trace(px.scatter(x=[future_timestamp], y=[future_value], color=['green'], labels={'value': 'Predicted Health'}).data[0])
+    st.plotly_chart(fig_future)
 
 if __name__ == "__main__":
     main()
