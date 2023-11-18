@@ -39,18 +39,26 @@ def main():
     st.subheader("Predictions")
     st.write(predictions)
 
-    # Plot data and predictions
-    st.subheader("Data and Predictions Plot")
+    # Plot original data
+    st.subheader("Original Data Plot")
     plt.figure(figsize=(10, 6))
     plt.plot(data['timestamp'], data['value'], label='Data')
-    plt.scatter(data['timestamp'][predictions == -1], data['value'][predictions == -1], color='red', label='Unhealthy')
+    plt.xlabel('Timestamp')
+    plt.ylabel('Value')
+    plt.legend()
+    st.pyplot(plt)
 
     # Predict health for a future timestamp
     future_timestamp = pd.Timestamp("2023-01-15 12:00:00")
     future_value = data.loc[data['timestamp'] == future_timestamp, 'value'].values[0]
     future_prediction = 'Unhealthy' if train_and_predict(pd.DataFrame({'value': [future_value]}), threshold)[0] == -1 else 'Healthy'
-    plt.scatter(future_timestamp, future_value, color='green', label=f'Future ({future_prediction})')
 
+    # Plot predicted health for future timestamp
+    st.subheader(f"Predicted Health for Future Timestamp ({future_prediction})")
+    plt.figure(figsize=(6, 4))
+    plt.plot(data['timestamp'], data['value'], label='Data')
+    plt.scatter(data['timestamp'][predictions == -1], data['value'][predictions == -1], color='red', label='Unhealthy')
+    plt.scatter(future_timestamp, future_value, color='green', label=f'Future ({future_prediction})')
     plt.xlabel('Timestamp')
     plt.ylabel('Value')
     plt.legend()
